@@ -1,0 +1,4 @@
+23/11/2015 : Test config nginx
+24/11/2015 : Mise en place arborescence projet / images Docker | Mise en place framework de test automatisé
+
+30/11/2015 : Mise en place framework de test automatisé

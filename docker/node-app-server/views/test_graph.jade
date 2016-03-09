@@ -1,0 +1,118 @@
+extends layout_graph
+
+block content
+    .navbar.navbar-inverse.navbar-fixed-top
+      .navbar-inner
+        .container-fluid
+          a.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.brand(href='#') Project name
+          .nav-collapse.collapse
+            p.navbar-text.pull-right
+              | Logged in as
+              a.navbar-link(href='#') Username
+            ul.nav
+              li.active
+                a(href='#') Home
+              li
+                a(href='#about') About
+              li
+                a(href='#contact') Contact
+    .container-fluid
+      .row-fluid
+        .span3
+          .well.sidebar-nav
+            ul.nav.nav-list
+              li.nav-header Sidebar
+              li.active
+                a(href='#') Link
+              li
+                a(href='#') Link
+              li.nav-header Sidebar
+              li
+                a(href='#') Link
+              li
+                a(href='#') Link
+              li
+                a(href='#') Link
+              li.nav-header Sidebar
+              li
+                a(href='#') Link
+        .span9
+          .hero-unit
+            h1 Hello, world!
+            p
+              | This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.
+            p
+              a.btn.btn-primary.btn-large Learn more »
+          .row-fluid
+            .span9
+              h2 Graph1
+              p
+                div(id="container1", class="graph_container")
+              p
+                a.btn(href='#') View details »
+          .row-fluid
+            .span9
+              h2  Graph2
+              p
+               .span2
+                  form
+                   input(id="apples" type="radio", name="dataset", value="apples", checked) 
+                   label(for='apples') Apples
+                   br
+                   input(id="oranges" type="radio", name="dataset", value="oranges")
+                   label(for='oranges') Oranges
+                   br
+                   input(id="strawberries" type="radio", name="dataset", value="strawberries")
+                   label(for='strawberries') strawberries
+                   br
+                   input(id="bananas" type="radio", name="dataset", value="bananas")
+                   label(for='bananas') Bananas
+              .span9
+                 p
+                   div(id="container2", class="graph_container")
+                 p
+                a.btn(href='#') View details »
+          .row-fluid
+            .span9
+              h2  Graph3
+              p
+               div(id="container3", class="graph_container")
+              p
+                a.btn(href='#') View details »
+          .row-fluid
+            .span9
+              h2  Graph4
+              p
+               div(id="container4", class="graph_container")
+              p
+                a.btn(href='#') View details »
+           .row-fluid
+            .span9
+              h2  Graph5
+              p
+               div(id="container5", class="graph_container")
+              p
+                a.btn(href='#') View details »
+            .span4
+              h2 Heading
+              p
+                | Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+              p
+                a.btn(href='#') View details »
+            .span4
+              h2 Heading
+              p
+                | Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+              p
+                a.btn(href='#') View details »
+      hr
+      script(type="text/javascript" src="javascripts/build/chart1.js")
+      script(type="text/javascript" src="javascripts/build/chart2.js")
+      script(type="text/javascript" src="javascripts/build/chart3.js")
+      script(type="text/javascript" src="javascripts/build/chart4.js")
+      script(type="text/javascript" src="javascripts/build/chart6.js")
+

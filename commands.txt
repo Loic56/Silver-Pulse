@@ -1,0 +1,41 @@
+// Once
+
+docker network create --driver bridge sp_nw
+
+// Build
+
+docker rmi sp-nginx-front && docker build -t sp-nginx-front ./docker/nginx-front/
+
+docker rmi sp-node-stub && docker build -t sp-node-stub ./docker/node-stub/
+
+docker rmi sp-node-app-server && docker build -t sp-node-app-server ./docker/node-app-server/
+
+docker rmi sp-node-dev && docker build -t sp-node-dev ./src/app-server/
+
+docker rmi sp-node-connector && docker build -t sp-node-connector ./docker/node-connector/
+
+// Developpement
+
+docker run -it --rm -v "//c//Users//romain.bouchaud//workspace//silver-pulse//":/usr/src/tmp sp-node-stub bash
+
+docker rmi sp-node-dev && docker build -t sp-node-dev ./src/app-client/ && docker run -it --rm -v "//c//Users//romain.bouchaud//workspace//silver-pulse//build//":/usr/src/tmp sp-node-dev && cp -vrf ./build/js/packed/* ./docker/nginx-front/static/js
+
+docker rmi sp-nginx-front && docker build -t sp-nginx-front ./docker/nginx-front/ 
+
+// Run
+
+docker run -it --rm -p=3000:8080 sp-node-app-server
+docker run -d --net=sp_nw --name snas sp-node-app-server
+docker run -d --net=sp_nw -p=80:80 -p=443:443 --name snf sp-nginx-front
+
+// Create machine
+
+docker-machine create -d virtualbox \
+  --engine-env HTTP_PROXY=http://authpcy.edf.fr:80/ \
+  --engine-env HTTPS_PROXY=https://authpcy.edf.fr:80/ \
+  --engine-env NO_PROXY="192.168.99.*" \
+  test
+
+// Misc
+
+docker run -d --name wisemap -p 8080:8080 r0m1bl/framasoft-docker:wisemapping-4.0.3

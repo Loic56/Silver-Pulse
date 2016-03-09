@@ -1,0 +1,10 @@
+nginx-front:
+  image: sp-nginx-front
+  ports:
+    - "80:80"
+    - "443:443"
+  net: "sp_nw"
+  restart: always
+node-app-server:
+  image: sp-node-app-server
+  net: "sp_nw"

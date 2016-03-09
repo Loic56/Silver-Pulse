@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Silver Pulse</title>
+    <script src='../js/react/react.js'></script>
+    <script src='../js/react/react-dom.js'></script>
+    <script src='../js/d3js/d3.js'></script>
+    <script src='../js/d3js/d3.min.js'></script>
+	<script src="../js/d3js/d3.tip.v0.6.3.js"></script>
+	<script src="../js/jquery/jquery-2.2.0.min.js"></script>
+	<script src="../js/bootstrap/bootstrap.min.js"></script>
+	<script src="../js/react-bootstrap/react-bootstrap.min.js"></script>
+	<script src="../js/jquery/jquery-ui.js"></script>
+	<!-- 
+	cat /usr/share/nginx/bootstrap/css/bootstrap.min.css | openssl dgst -sha512 -binary | openssl enc -base64 -A  >> bootstrap-key.txt
+	v/cVNg/CvrO89N2c70StR5kyy00ssFoYZvi0q5uT3J8rCBEYyjkBPwvtXRvPPae5HeTZ5966U+9NkKlLLLyACw==
+	cat /usr/share/nginx/bootstrap/css/bootstrap-theme.min.css | openssl dgst -sha384 -binary | openssl enc -base64 -A  >> bootstrap-theme-key.txt
+	9vCCSeS4uF8yhgQUtNArBrV5mWZiszCLj3k29bGRPVEKuytq4QlcxXoB3hsLHaMs  
+	-->
+    <link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap.min.css" integrity="sha512-v/cVNg/CvrO89N2c70StR5kyy00ssFoYZvi0q5uT3J8rCBEYyjkBPwvtXRvPPae5HeTZ5966U+9NkKlLLLyACw==" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap-theme.min.css" integrity="sha384-9vCCSeS4uF8yhgQUtNArBrV5mWZiszCLj3k29bGRPVEKuytq4QlcxXoB3hsLHaMs" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/jquery/jquery-ui.css" >
+    <link rel="stylesheet" type="text/css" href="../stylesheets/dashboard.css">
+	<style>
+			body {
+				font:12px sans-serif;
+			}
+			.form-panel{
+				margin:10px;
+				padding:5px;
+			}
+			.index{
+				top: 0px;
+			}
+			.form-title{
+				margin-left:40px;
+			}	
+		</style>
+  </head>
+  <body>
+  
+ <nav id="nav" class="navbar navbar-inverse navbar-fixed-top"></nav>
+  
+ <div class="container-fluid">
+    <div class="row">
+        <div id="sidebar" class="col-sm-3 col-md-2 sidebar"></div>
+
+		<div id="main_panel" class="container col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main index"> 
+			<div id="presentation_tab" class="row">  </div> 
+			<div class="row panel panel-default form-panel">
+				<div id="presentation_form" class="container"> </div>
+			</div>
+			<div id="presentation_results" class="row panel panel-default form-panel"> 
+				<div id="presentation_list" class="container"> </div>
+			</div>
+		</div>
+
+    </div>
+ </div>
+
+<div id="scripts"></div>
+<script type="text/javascript" src="../js/index.js"></script>
+<script type="text/javascript" src="../js/project_area.js"></script>
+<script type="text/javascript" src="../js/project.js"></script>
+<script type="text/javascript" src="../js/user.js"></script>
+<script type="text/javascript" src="../js/serie.js"></script>
+<script type="text/javascript" src="../js/ticket.js"></script>
+
+<script>
+
+	function RAZ_form(){
+		var div = document.getElementById("presentation_form");
+		div.innerHTML = "";
+	}
+	// title + tabs 
+	function RAZ_presentation(){
+		var div = document.getElementById("presentation_tab");
+		div.innerHTML = "";
+	}
+	function RAZ_presentation_list(){
+		var div = document.getElementById("presentation_list");
+		div.innerHTML = "";
+	}
+	function RAZ(){
+		RAZ_form();
+		RAZ_presentation_list();
+	}
+</script>

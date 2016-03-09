@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Silver Pulse</title>
+    <script src='../js/react/react.js'></script>
+    <script src='../js/react/react-dom.js'></script>
+    <script src='../js/d3js/d3.js'></script>
+    <script src='../js/d3js/d3.min.js'></script>
+	<script src="../js/d3js/d3.tip.v0.6.3.js"></script>
+	<script src="../js/jquery/jquery-2.2.0.min.js"></script>
+	<script src="../js/bootstrap/bootstrap.min.js"></script>
+	<script src="../js/jquery/jquery-ui.js"></script>
+	
+	<!-- 
+	cat /usr/share/nginx/bootstrap/css/bootstrap.min.css | openssl dgst -sha512 -binary | openssl enc -base64 -A  >> bootstrap-key.txt
+	v/cVNg/CvrO89N2c70StR5kyy00ssFoYZvi0q5uT3J8rCBEYyjkBPwvtXRvPPae5HeTZ5966U+9NkKlLLLyACw==
+	
+	cat /usr/share/nginx/bootstrap/css/bootstrap-theme.min.css | openssl dgst -sha384 -binary | openssl enc -base64 -A  >> bootstrap-theme-key.txt
+	9vCCSeS4uF8yhgQUtNArBrV5mWZiszCLj3k29bGRPVEKuytq4QlcxXoB3hsLHaMs  
+	-->
+	
+    <link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap.min.css" integrity="sha512-v/cVNg/CvrO89N2c70StR5kyy00ssFoYZvi0q5uT3J8rCBEYyjkBPwvtXRvPPae5HeTZ5966U+9NkKlLLLyACw==" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap-theme.min.css" integrity="sha384-9vCCSeS4uF8yhgQUtNArBrV5mWZiszCLj3k29bGRPVEKuytq4QlcxXoB3hsLHaMs" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/jquery/jquery-ui.css" >
+    <link rel="stylesheet" type="text/css" href="../stylesheets/dashboard.css">
+	<style>
+			body {
+			  font:12px sans-serif;
+			}
+			.axis line {
+			  fill:none;
+			  stroke:#000;
+			}
+			.line {
+			  fill:none;
+			  stroke:steelblue;
+			  stroke-width:1.5px;
+			}
+			.bar {
+		    fill:steelblue;
+			}
+			.bar:hover {
+			fill: brown;
+			}
+			path {
+			  stroke:Black;
+			  stroke-width:1;
+			  fill:none;
+			}
+			.d3-tip {
+			  line-height:1;
+			  font-weight:bold;
+			  padding:12px;
+			  background:rgba(0, 0, 0, 0.8);
+			  color:#fff;
+			  border-radius:2px;
+			}
+			.chart{
+			border:1px solid silver;
+			<!-- box-shadow: -1px 1px 5px 9px silver; -->
+			}
+			.placeholder{
+			padding:2px;
+			<!-- border : 1px solid green; -->
+			}
+			.panel-default{
+			border:1px solid grey;
+			margin-bottom:0px;
+			}
+			.panel-body{
+			border:1px solid grey;
+			padding:1px;
+			}
+			.placeholders{
+			padding-left:10px;
+			padding-right:10px;
+			}
+			.btn_test{
+			text-align:right;
+			font-size:8px;
+			padding:4px;
+			padding-top:2px;
+			padding-bottom:2px;
+			}
+			.btn_test span{
+			margin-left:3px;
+			}
+			.btn-footer{
+			margin-left:5px;
+			}
+			.panel-footer{
+			text-align:right;
+			padding-top:5px;
+			padding-bottom:5px;
+			}
+			<!-- btn -->
+			.dropdown-toggle{
+			width:130px;
+			padding:2px;
+			}
+			#btn_submit_login{
+			margin-left:10px;
+			}
+			.main_footer{
+			padding: 5px;
+			background-color : grey;
+			top: 49px;
+			}
+			.hidden_div{
+			visibility: hidden;
+			}
+
+
+	</style>
+  </head>
+  <body>
+  
+ <nav id="nav" class="navbar navbar-inverse navbar-fixed-top"></nav>
+  
+ <div class="container-fluid">
+    <div class="row">
+        <div id="sidebar" class="col-sm-3 col-md-2 sidebar"></div>
+		<div id="main_panel" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main hidden_div">
+			<div id="placeholders" class="row placeholders"></div> 
+		</div>
+		<div id="main_footer" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main_footer hidden_div"></div>
+		<div id="dashboard_footer" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main_footer hidden_div"></div>
+		</div>
+    </div>
+ </div>
+
+<div id="scripts"></div>
+<script type="text/javascript" src="../js/main.js"></script>
+
+
+ 
+<script>
+var tab_chart = new Array;
+
+// 4 dashboards de 6 graphs max
+var tab_saved_dashboard = new Array(2);
+for (var i = 0; i < 3; i++) {
+  tab_saved_dashboard[i] = new Array(5);
+}
+
+	
+count = 0;
+
+function save_dashboard(){
+	var dashboard_name = "Dashboard " + (count + 1);
+	var dashboard_id = "dashboard_" + (count + 1);
+	// ajout a la liste des dashboard sauvegardés
+	var dashboard_list = document.getElementById("dashboard_list");
+	var saved_dashboard = document.createElement("li");
+	saved_dashboard.setAttribute("id", dashboard_id);
+
+	var span_content = document.createElement("span");
+	var element = document.createElement("a");
+	element.setAttribute("href", "#");
+	element.setAttribute("onclick", "show_dashboard_view("+dashboard_id+ ")" );
+	element.innerHTML = dashboard_name;
+	var btn_trash_dashboard = document.createElement("button");
+	btn_trash_dashboard.setAttribute("class", "btn btn-default btn-sm");
+	btn_trash_dashboard.setAttribute("onclick", "delete_dashboard("+dashboard_id+ ")" );
+	var span_trash_dashboard = document.createElement("span");
+	span_trash_dashboard.setAttribute("class", "glyphicon glyphicon-trash" );
+	btn_trash_dashboard.appendChild(span_trash_dashboard); 
+	
+	span_content.appendChild(element);
+	span_content.appendChild(btn_trash_dashboard);
+	saved_dashboard.appendChild(span_content); 
+	<!-- saved_dashboard.appendChild(btn_trash_dashboard);  -->
+
+	dashboard_list.appendChild(saved_dashboard); 
+	
+	tab_saved_dashboard[count][0] = dashboard_id;
+	
+	for(var i=0 ; i<tab_chart.length ; i++) {
+		tab_saved_dashboard[count][i+1] = tab_chart[i];
+    }
+	reset_view();
+	// alert("dashboard sauvé !");
+	count ++;
+}
+
+// fermeture vue dashboard
+function close_dashboard_view(){
+	reset_view();
+	hide("dashboard_footer");
+	document.getElementById("dropdownMenu2").disabled = false;
+}
+
+
+
+function show_dashboard_view(dashboard){
+	// on supprimer les indicateurs existants
+	reset_view();
+	show("main_panel");
+	document.getElementById("dropdownMenu2").disabled = true;
+	// on recherche le dashboard ds les dashboards sauvegardés
+	for(var i=0 ; i<tab_saved_dashboard.length ; i++) {
+ 		if(tab_saved_dashboard[i][0] == dashboard.id){
+		// on recupère les indicateurs du dashboard sauvegardé
+			for(var j=1 ; j<tab_saved_dashboard[i].length ; j++) {
+				if(typeof tab_saved_dashboard[i][j] !== 'undefined' && tab_saved_dashboard[i][j] !== null){
+					//construction de la vue
+					add_component(tab_saved_dashboard[i][j]);
+				}	
+			}
+		} 
+    }
+	hide("main_footer");
+	show("dashboard_footer");
+}
+
+
+
+function delete_dashboard(dashboard){
+	// delete in saved array tab
+	for(var i=0 ; i<tab_saved_dashboard.length ; i++) {
+		if(tab_saved_dashboard[i][0] == dashboard.id){
+			for(var j=0 ; j<tab_saved_dashboard[i].length ; j++) {
+				tab_saved_dashboard[i].splice(j, 1);
+			}
+		}
+    }
+	// delete in My Dashboard list
+	document.getElementById(dashboard.id).remove();
+	// delete dashboard view
+	reset_view();
+	
+	hide("dashboard_footer");
+	document.getElementById("dropdownMenu2").disabled = false;
+}
+
+
+function reset_view(){
+	// supprimer ts les container du panel principal
+	var placeholders = document.getElementsByClassName("placeholder");
+    while(placeholders.length > 0){
+        placeholders[0].parentNode.removeChild(placeholders[0]);
+    }
+	hide("main_panel");
+	hide("main_footer");
+	//vide le tableau des graphs
+	clear_tab_chart();
+}
+
+function clear_tab_chart(){
+	while(tab_chart.length > 0) {
+		tab_chart.pop();
+	}
+}
+	
+function delete_in_tab_chart(id) {
+    for(var i=0 ; i<tab_chart.length ; i++) {
+        if(tab_chart[i] === id){
+			tab_chart.splice(i, 1);
+		}
+    }
+}
+
+function exist_in_tab_chart(id) {
+    for(var i=0 ; i<tab_chart.length ; i++) {
+        if(tab_chart[i] === id){
+			return true;
+		}
+    }
+	return false;
+}
+
+
+function del_component(component){
+    document.getElementById(component).remove();
+	delete_in_tab_chart(component);
+}
+
+function extract_data(component){
+  switch(component.id) {
+     case "IC1":
+        window.open("../resources/ic1.csv");
+        break;
+     case "PIE":
+        window.open("../resources/pie.csv");
+        break;
+	case "IE7":
+        window.open("../resources/ie7.csv");
+        break;
+    case "IE5":
+        window.open("../resources/ie5.tsv");
+        break;
+    case "IE10":
+        window.open("../resources/ie10.tsv");
+        break;
+	case "IE13":
+        window.open("../resources/ie13.csv");
+        break;
+     default:
+        alert("KO");
+		} 
+}
+
+
+function switch_footer(old, next){
+	document.getElementById(old).remove();
+	document.getElementById(next).style.visibility = "visible";
+}
+
+
+function hide(element){
+	document.getElementById(element).style.visibility = "hidden";
+}
+
+function show(element){
+	document.getElementById(element).style.visibility = "visible";
+}
+
+function add_component(id_component){
+	container="container_" + id_component;
+	js="../js/charts/" + id_component + ".js";
+	show("main_panel");
+	show("main_footer");
+	
+
+  if(exist_in_tab_chart(id_component)){
+		alert("Indicateur déjà présent ds le dashboard");
+	}else if(tab_chart.length >= 6){
+		alert("Max 6 indicateurs");
+	}
+	else{
+	tab_chart.push(id_component);
+	
+//footer
+	var btn_group = document.createElement('div');
+	btn_group.setAttribute('class', 'btn-group');
+	  
+	var span_delete = document.createElement('span');
+	span_delete.setAttribute('class', 'glyphicon glyphicon-trash');
+	span_delete.setAttribute('aria-hidden', 'true');
+	var btn_delete = document.createElement('button');
+	btn_delete.setAttribute('type', 'button');
+	btn_delete.setAttribute('class', 'btn btn-default btn_test');
+	btn_delete.setAttribute('id', 'btn_delete');
+	btn_delete.setAttribute('aria-label', 'Left Align');
+	btn_delete.setAttribute('onclick', "del_component('"+id_component+"')"); 
+	btn_delete.innerHTML = "Delete";
+	btn_delete.appendChild(span_delete);
+	  
+	var span_extract = document.createElement('span');
+	span_extract.setAttribute('class', 'glyphicon glyphicon-download-alt');
+	span_extract.setAttribute('aria-hidden', 'true');
+	var btn_extract_data = document.createElement('button');
+	btn_extract_data.setAttribute('type', 'button');
+	btn_extract_data.setAttribute('class', 'btn btn-default btn_test');
+	btn_extract_data.setAttribute('id', 'btn_extract');
+	btn_extract_data.setAttribute('aria-label', 'Left Align');
+	btn_extract_data.setAttribute('onclick', "extract_data("+id_component+")"); 
+	btn_extract_data.innerHTML = "Data";
+	btn_extract_data.appendChild(span_extract);
+	  
+	var span_bookmark = document.createElement('span');
+	span_bookmark.setAttribute('class', 'glyphicon glyphicon-bookmark');
+	span_bookmark.setAttribute('aria-hidden', 'true');
+	var btn_bookmark = document.createElement('button');
+	btn_bookmark.setAttribute('type', 'button');
+	btn_bookmark.setAttribute('class', 'btn btn-default btn_test');
+	btn_bookmark.setAttribute('id', 'btn_bookmark');
+	btn_bookmark.setAttribute('aria-label', 'Left Align');
+	btn_bookmark.innerHTML = "Bookmark";
+	btn_bookmark.appendChild(span_bookmark);
+
+	btn_group.appendChild(btn_extract_data);
+	btn_group.appendChild(btn_delete);
+	btn_group.appendChild(btn_bookmark);
+
+	var footer_div = document.createElement('div');
+	footer_div.setAttribute('class', 'panel-footer');
+	footer_div.appendChild(btn_group);
+
+
+	var panel_body_div = document.createElement('div');
+	panel_body_div.setAttribute('class', 'panel-body');
+	panel_body_div.setAttribute('id', container); 
+	var title = document.createElement('h3');
+	title.setAttribute('class', 'panel-title');
+	title.innerHTML = id_component; 
+	var panel_heading_div = document.createElement('div');
+	panel_heading_div.setAttribute('class', 'panel-heading');
+	panel_heading_div.appendChild(title);
+	var panel_default_div = document.createElement('div');
+	panel_default_div.setAttribute('class', 'panel panel-default');
+	panel_default_div.appendChild(panel_heading_div);
+	panel_default_div.appendChild(panel_body_div);
+	panel_default_div.appendChild(footer_div);
+	var placeholder_div = document.createElement('div');
+	placeholder_div.setAttribute('class', 'col-md-4 placeholder');
+	placeholder_div.setAttribute('id', id_component); //id
+	placeholder_div.appendChild(panel_default_div);
+	document.getElementById('placeholders').appendChild(placeholder_div);
+	  
+	var script_js = document.createElement('script');
+	script_js.setAttribute('type', 'text/javascript');
+	script_js.setAttribute('src', js);
+	document.getElementById('scripts').appendChild(script_js);
+	}
+}
+</script>
+
+</body>
+</html>
